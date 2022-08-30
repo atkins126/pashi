@@ -90,10 +90,6 @@ object MainForm: TMainForm
     object tsRendered: TTabSheet
       Caption = 'Display View'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object pnlRendered: TPanel
         Left = 0
         Top = 0
@@ -278,7 +274,7 @@ object MainForm: TMainForm
         Color = clWindow
         Collapsed = True
         TabOrder = 1
-        ExpandedHeight = 167
+        ExpandedHeight = 192
         inline frmLines: TLineStyleOptionsFrame
           Left = 0
           Top = 0
@@ -465,7 +461,7 @@ object MainForm: TMainForm
     Left = 336
     Top = 152
     Bitmap = {
-      494C010105000900180010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010105000900200010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000002000000001002000000000000020
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -735,5 +731,10 @@ object MainForm: TMainForm
       201FBEF3E00300038FF1A407E0030FC3FFF9BD7FE0030003FF75BCFFFFFF8007
       FF8F81FFBF7DF87FFFFFFFFF7F7EFFFF00000000000000000000000000000000
       000000000000}
+  end
+  object appEvents: TApplicationEvents
+    OnHelp = appEventsHelp
+    Left = 272
+    Top = 88
   end
 end

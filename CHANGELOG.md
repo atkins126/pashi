@@ -8,9 +8,61 @@ This change log begins with the first ever pre-release version of what was then 
 
 From release 2.0.0 the version numbering has attempted to adhere to the principles of [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Release 2.2.1 - 2022-08-29
+
+This release includes _PasHi_ v2.2.1 and _PasHiGUI_ v1.2.1. Changes are as follows:
+
+### PasHi v2.2.1 [build 14]
+
+* Refactored internal handling of version information (see _General_ section below). No visible change to program output.
+
+### PasHiGUI v1.2.1 [build 8]
+
+* Fixed bug where pressing F1 key when a menu is open caused an error message to be displayed. [Issue 32]
+* Fixed bug where the About box was displaying the wrong version number for _PasHi_. [Issue 31]
+* Made minor changes to the text displayed in the About box.
+* Refactored internal handling of version information (see _General_ section below).
+
+### General
+
+* Changed method used to store and read version information. File version numbers for _PashHi_ and _PasHiGUI_ are now stored in a common `VERSION` file in the repo root. Information from this file is included in both program's version information resources and in special `RCDATA` resources. This enables each program to access the other's version numbers as required.
+
+## Release 2.2.0 - 2022-07-04
+
+This release includes _PasHi_ v2.2.0 and _PasHiGUI_ v1.2.0. Changes are as follows:
+
+### PasHi v2.2.0 [build 13]
+
+* Added new `--line-number-start` command (and `-z` short form) to enable the starting line number in line numbered output to be specified.
+* Added new `--version` command to display the program's version number. Added the associated `version` command to the config file blacklist since it is not valid for inclusion in a config file.
+* Updated sign-on message: excluded program version number and updated web address.
+* Added program version number to branding included in output HTML.
+* Fixed erroneous error message for out of range numeric parameters.
+* Modified config file error messages.
+* Fixed some HTML5 inline tag formatting errors in generated output: XHTML style closing tags were being used for some elements.
+* Updated text of help screen re the new commands.
+
+### PasHiGUI v1.2.0 [build 7]
+
+* Updated options pane to provide support for the new `--line-number-start` options.
+* Ensured any `version` command in the program options file is ignored.
+* Fixed CSS errors in HTML used to display code fragments.
+
+### General
+
+* Updated user guide `UserGuide.html`:
+  * Added details of new commands
+  * Some clarifications and corrections
+  * Fixed CSS errors
+* Made minor changes to read-me file that is included in distributions.
+* Updated various web addresses in documentation.
+* Updated `config-template` comments:
+  * noted fact that the `version` command can't be used in the `config` file
+  * added details of new `line-number-start` command & its parameters
+
 ## Release 2.1.0 - 2021-09-22
 
-This release includes _PasHi_ v2.1.0 and _PasHiGUI_ v1.1.0. Change are as follows:
+This release includes _PasHi_ v2.1.0 and _PasHiGUI_ v1.1.0. Changes are as follows:
 
 ### PasHi v2.1.0 [build 12]
 
