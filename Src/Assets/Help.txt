@@ -24,6 +24,8 @@ PasHi supports the following commands:
                               no - no branding.
                             Alternatively use -b+ to include branding or -b- to
                             exclude it.
+--config-show               Displays the settings defined by the config file, if
+                            any. Do not use with other commands.
 --default-css               Embed the program's default CSS in a <style> tag in
                             HTML documents [default].
 --doc-type            -d    Specifies the output document type, which must be
@@ -63,14 +65,39 @@ PasHi supports the following commands:
                               no - do not enclose CSS [default]
                             Alternatively use -c+ to enclose CSS in comments or
                             -c- not to do so.
+--inhibit-styling           Enables styling for specified syntactic elements to
+                            be omitted from the HTML output. The following
+                            parameter must be in set format: a comma delimited
+                            list of the names of syntactic elements for which
+                            styling is to be prevented. The list must be
+                            enclosed in { and } characters, for e.g.
+                            {space,kwd}. Valid element names are:
+                              space - white space
+                              comment - comments
+                              kwd - keywords
+                              ident - identifiers
+                              sym - symbols
+                              str - string literals
+                              num - integers
+                              float - floating point numbers
+                              hex - hexadecimal numbers
+                              preproc - pre-processor instructions
+                              asm - assembler code
+                              err - syntax errors
+                            Use the empty set, {}, to style all elements
+                            [default].
+                            Where there is just one syntactic element being
+                            specified, the curly brackets can be omitted.
 --input-clipboard     -r    Read source code from the clipboard instead of
                             stdin or file(s).
 --input-stdin               Read source code from stdin [default].
 --language            -l    Specifies the language used for the output
-                            document. The following parameter must contain a
-                            language code that HTML recognises. E.g. "en" or
-                            "en-gb".
---language-neutral          Outputs no language information [default].
+                            document. The next parameter must supply one of the
+                            following values:
+                              text - required language code: this must be a
+                                language code that HTML recognises. E.g. "en" or
+                                "en-gb".
+                              neutral (or -) - language neutral [default].
 --legacy-css                Determines which CSS class names are used in the
   (*deprecated*)            output HTML document. These can either be the
                             current class names or the class names used in
@@ -93,8 +120,9 @@ PasHi supports the following commands:
                               zero - pad with zeros
                               dash - pad with dashes (-)
                               dot - pad with dots (.).
---line-number-start   -z    Determines line number of first line of listing,
-                            in range 1..9999 [default 1].
+--line-number-start   -z    Determines line number of first line of listing.
+                            The next parameter specifies a line number in the
+                            range 1..9999 [default 1].
 --line-number-width   -i    Determines minimum width, in characters, occupied
                             by line numbers. Line numbers are padded to this
                             width if necessary. The next parameter specifies
@@ -119,27 +147,46 @@ PasHi supports the following commands:
                               on - style alternate lines differently
                               off - all lines have same appearance [default].
 --title               -t    Sets the title used for the output document. The
-                            next parameter must contain the required text. To
-                            include spaces surround the text in double quotes.
---title-default             Uses the program's default title for the output
-                            document [default].
---trim                -m    Determines whether input documents are trimmed of
-                            leading and trailing blank lines. --trim requires
+                            next parameter must supply one of the following
+                            values:
+                              text - required title text (to include spaces
+                                surround the text in double quotes).
+                              - - use the default title [default].
+--trim                -m    Determines whether and how input documents are
+                            trimmed of blank lines and spaces. --trim requires
                             the next parameter to supply one of the following
                             values:
-                              yes - trim [default]
-                              no - do not trim
-                            Alternatively use -m+ to trim or -m- to prevent
-                            trimming.
---verbosity                 Specifies the amount of output from the program.
-                            The next parameter must be one of:
-                              normal - sign-on, error, warning and completion
-                                messages. [default] (*default deprecated: normal
-                                option will remain*)
-                              no-warn - no warnings: sign-on, error and
-                                completion messages only.
-                              quiet - error messages only.
---version                   Displays program version. Do not use with other
+                              - - do not trim anything.
+                              lines - trim leading and trailing blank lines.
+                                [default] (*default deprecated: lines option
+                                will remain*)
+                              spaces - trim trailing spaces from lines
+                              all - trim leading and trailing blank lines and
+                                trim trailing spaces from lines
+                              yes - alias for "lines" parameter (*deprecated*)
+                              no - alias for "-" parameter (*deprecated*)
+                            -m+ (*deprecated*) is an alias for "--trim lines"
+                            and -m- (*deprecated*) is an alias for "trim -".
+--verbosity                 Specifies the amount of output from the program. The
+                            following parameter must be in set format or be an
+                            alias. A set format parameter is a comma separated
+                            list of zero or more verbosity states, enclosed in
+                            curly braces, for e.g. {info,warn}, {} or {error}.
+                            Valid verbosity level names are:
+                              info - display general information, including the
+                                sign-on message.
+                              warn, warning or warnings - display warnings
+                              error or errors - display error messages
+                            The following aliases can be used, without curly
+                            brackets:
+                              normal - alias for {info,warn,error} [default]
+                                (*default deprecated: normal option will
+                                remain*)
+                              no-warn - alias for {info,error}
+                              quiet - alias for {error}
+                              silent or - - alias for {}
+                            When {} is specified the program emits no output.
+--version             -v    Displays program version. Do not use with other
                             commands.
 --viewport                  Determines the type, if any, of viewport meta-data
                             written to a HTML document head section. The next
@@ -154,8 +201,8 @@ application data directory. Commands are listed one per line and have the same
 names and functionality as the long form commands above, but without the
 leading "--". If a command takes a parameter it must be entered on the same
 line as the command and separated from it by one or more spaces. Parameters
-containing spaces must not be enclosed in quotes. The "help" and "version"
-commands must *not* be used in a config file otherwise PasHi will exit with an
-error.
+containing spaces must not be enclosed in quotes. The "help", "version" and
+"config-show" commands must *not* be used in a config file otherwise PasHi will
+exit with an error.
 
 PasHi's application data directory is %AppData%\DelphiDabbler\PasHi.

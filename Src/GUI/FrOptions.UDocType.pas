@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2012-2021, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2012-2025, Peter Johnson (www.delphidabbler.com).
  *
  * Frame that is used to edit various PasHi options relating to output document
  * type.
@@ -15,9 +15,20 @@ unit FrOptions.UDocType;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls,
-  FrOptions.UHelper, FrOptions.UBase, UOptions;
+  Winapi.Windows,
+  Winapi.Messages,
+  System.SysUtils,
+  System.Variants,
+  System.Classes,
+  Vcl.Graphics,
+  Vcl.Controls,
+  Vcl.Forms,
+  Vcl.Dialogs,
+  Vcl.StdCtrls,
+  Vcl.CheckLst,
+  FrOptions.UHelper,
+  FrOptions.UBase,
+  UOptions;
 
 type
   TDocTypeOptionsFrame = class(TBaseOptionsFrame)
@@ -25,10 +36,13 @@ type
     rbDocTypeComplete: TRadioButton;
     cbCompleteDocType: TComboBox;
     lblCompleteDocType: TLabel;
+    clbInhibitStyling: TCheckListBox;
+    lblInhibitStyling: TLabel;
     procedure rbDocTypeFragmentClick(Sender: TObject);
     procedure rbDocTypeCompleteClick(Sender: TObject);
   private
     fDocTypeMap: TValueMap;
+    fInhibitStylesMap: TValueMap;
     procedure UpdateControls;
   public
     constructor Create(AOwner: TComponent); override;
@@ -39,6 +53,11 @@ type
 
 
 implementation
+
+uses
+  System.StrUtils,
+  System.Types,
+  UUtils;
 
 {$R *.dfm}
 
@@ -56,11 +75,29 @@ begin
   end;
   fDocTypeMap.GetDescriptions(cbCompleteDocType.Items);
   cbCompleteDocType.ItemIndex := fDocTypeMap.IndexOfValue('html5');
+
+  fInhibitStylesMap := TValueMap.Create;
+  fInhibitStylesMap.Add('White space', 'space');
+  fInhibitStylesMap.Add('Comments', 'comment');
+  fInhibitStylesMap.Add('Keywords', 'kwd');
+  fInhibitStylesMap.Add('Identifiers', 'ident');
+  fInhibitStylesMap.Add('Symbols', 'sym');
+  fInhibitStylesMap.Add('String literals', 'str');
+  fInhibitStylesMap.Add('Integers', 'num');
+  fInhibitStylesMap.Add('Floating Point Numbers', 'float');
+  fInhibitStylesMap.Add('Hexadecimal numbers', 'hex');
+  fInhibitStylesMap.Add('Pre-processor instructions', 'preproc');
+  fInhibitStylesMap.Add('Inline assembler', 'asm');
+  fInhibitStylesMap.Add('Syntax Errors', 'err');
+  fInhibitStylesMap.GetDescriptions(clbInhibitStyling.Items);
+  clbInhibitStyling.ItemIndex := fInhibitStylesMap.IndexOfValue('space');
+
   UpdateControls;
 end;
 
 destructor TDocTypeOptionsFrame.Destroy;
 begin
+  fInhibitStylesMap.Free;
   fDocTypeMap.Free;
   inherited;
 end;
@@ -68,9 +105,13 @@ end;
 procedure TDocTypeOptionsFrame.Initialise(const Options: TOptions);
 var
   DocType: string;
+  Styles: TStringDynArray;
+  StylesStr: string;
+  Style: string;
+  Idx: Integer;
 begin
   DocType := Options.GetParamAsStr('doc-type');
-  if DocType = 'fragment' then
+  if IsStrInList(DocType, ['fragment', 'frag'], False) then
   begin
     rbDocTypeFragment.Checked := True;
     rbDocTypeComplete.Checked := False;
@@ -81,6 +122,20 @@ begin
     rbDocTypeComplete.Checked := True;
     cbCompleteDocType.ItemIndex := fDocTypeMap.IndexOfValue(DocType);
   end;
+
+  StylesStr := Options.GetParamAsStr('inhibit-styling');
+  if Length(StylesStr) >= 2 then
+  begin
+    StylesStr := Copy(StylesStr, 2, Length(StylesStr) - 2);
+    Styles := SplitString(StylesStr, ',');
+    for Style in Styles do
+    begin
+      Idx := fInhibitStylesMap.IndexOfValue(Style);
+      if Idx >= 0 then
+        clbInhibitStyling.Checked[Idx] := True;
+    end;
+  end;
+
   UpdateControls;
 end;
 
@@ -95,6 +150,9 @@ begin
 end;
 
 procedure TDocTypeOptionsFrame.UpdateOptions(const Options: TOptions);
+var
+  Idx: Integer;
+  Value: string;
 begin
   if rbDocTypeFragment.Checked then
     Options.Store('doc-type', 'fragment')
@@ -102,6 +160,19 @@ begin
     Options.Store(
       'doc-type', fDocTypeMap.ValueByIndex(cbCompleteDocType.ItemIndex)
     );
+
+  Value := '';
+  for Idx := 0 to Pred(clbInhibitStyling.Count) do
+  begin
+    if clbInhibitStyling.Checked[Idx] then
+    begin
+      if Value = '' then
+        Value := fInhibitStylesMap.ValueByIndex(Idx)
+      else
+        Value := Value + ',' + fInhibitStylesMap.ValueByIndex(Idx);
+    end;
+  end;
+  Options.Store('inhibit-styling', '{' + Value + '}');
 end;
 
 procedure TDocTypeOptionsFrame.UpdateControls;

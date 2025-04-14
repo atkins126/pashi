@@ -4,17 +4,17 @@ PasHi - Pascal Syntax Highlighter
 Overview
 --------
 
-PasHi is a Pascal syntax highlighter targetted at the Delphi Language.
+PasHi is a Pascal syntax highlighter targeted at the Delphi Language.
 
-PasHi itself is a command line program. It has a help screen that can displayed from the command line by doing:
+PasHi itself is a command line program. It has a help screen that can be displayed from the command line by doing:
 
     > PasHi --help
 
-For users who prefer to use a GUI, PasHi's installer provides the option to install PasHiGUI. This program provides GUI access to many (but not all) of PasHi's features.
+For users who prefer to use a GUI, PasHi's installer has the option of installing PasHiGUI. This program provides GUI access to many (but not all) of PasHi's features.
 
 For full details of how to install PasHi etc. see the file `ReadMe.txt` that is included in the program download.
 
-A comprehensive user guide, `UserGuide.html` is installed alongside PasHi. PasHiGUI provides a menu option to display the file.
+A comprehensive user guide, [`UserGuide.html`](https://htmlpreview.github.io/?https://github.com/delphidabbler/pashi/blob/master/Docs/UserGuide.html) is installed alongside PasHi. PasHiGUI provides a menu option to display the file.
 
 > **Note:** Both `ReadMe.txt` and `UserGuide.html` can also be found in the `Docs` directory in PasHi's [GitHub repository](https://github.com/delphidabbler/pashi).
 

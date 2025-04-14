@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2012, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2012-2025, Peter Johnson (www.delphidabbler.com).
  *
  * Modifies input source code per program configuration to prepare for
  * highlighting.
@@ -15,15 +15,17 @@ unit USourceProcessor;
 interface
 
 uses
-  SysUtils,
-  IO.UTypes, UConfig;
+  System.SysUtils,
+  IO.UTypes,
+  UConfig;
 
 type
   TSourceProcessor = class(TObject)
   strict private
     var
       fConfig: TConfig;
-    class function TrimSource(const SourceCode: string): string;
+    class function TrimSourceLines(const SourceCode: string): string;
+    class function TrimSourceTrailingSpaces(const SourceCode: string): string;
     function Separator: string;
   public
     constructor Create(const Config: TConfig);
@@ -33,8 +35,11 @@ type
 implementation
 
 uses
-  Classes,
-  IO.Readers.UFactory, UConsts;
+  System.StrUtils,
+  System.Classes,
+  System.Types,
+  IO.Readers.UFactory,
+  UConsts;
 
 
 { TSourceProcessor }
@@ -64,8 +69,10 @@ begin
     for SourceCode in Sources do
     begin
       ProcessedSource := SourceCode;
-      if fConfig.TrimSource then
-        ProcessedSource := TrimSource(ProcessedSource);
+      if fConfig.TrimSource in [tsLines, tsBoth] then
+        ProcessedSource := TrimSourceLines(ProcessedSource);
+      if fConfig.TrimSource in [tsSpaces, tsBoth] then
+        ProcessedSource := TrimSourceTrailingSpaces(ProcessedSource);
       AddToOutput(ProcessedSource);
     end;
     Result := SB.ToString;
@@ -83,7 +90,8 @@ begin
     Result := Result + CRLF;
 end;
 
-class function TSourceProcessor.TrimSource(const SourceCode: string): string;
+class function TSourceProcessor.TrimSourceLines(const SourceCode: string):
+  string;
 var
   Lines: TStringList;
 begin
@@ -98,4 +106,28 @@ begin
   end;
 end;
 
+class function TSourceProcessor.TrimSourceTrailingSpaces(
+  const SourceCode: string): string;
+var
+  Idx: Integer;
+  SourceLines: TStringDynArray;
+begin
+  Result := '';
+  if SourceCode = '' then
+    Exit;
+  // We convert EOL to LF in SourceCode because SplitString takes a string of
+  // character delimiters and can't handle a single multi-character delimiter
+  // like the CRLF that EOL is set to on Windows\.
+  SourceLines := SplitString(
+    StringReplace(SourceCode, EOL, LF, [rfReplaceAll]), LF
+  );
+  for Idx := Low(SourceLines) to High(SourceLines) do
+  begin
+    Result := Result + TrimRight(SourceLines[Idx]);
+    if Idx < High(SourceLines) then
+      Result := Result + EOL;
+  end;
+end;
+
 end.
+

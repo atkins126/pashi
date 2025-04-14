@@ -61,10 +61,15 @@
 # config file. If such a command is present then PasHi will fail with an error
 # message.
 #
-# At present there are two blacklisted commands: "help" & "version".
+# At present there are three blacklisted commands: "config-show", "help" & 
+# "version".
 #
 # A complete list of valid commands follows. Commands and parameters that are
 # slated for removal in the next major release are flagged as deprecated.
+#
+# For an explanation of what these commands do see the documentation of the
+# related command line command in the user guide or in PasHi's help screen,
+# accessed by typing "PasHi --help".
 
 
 # --- Input source commands ---
@@ -78,9 +83,12 @@
 # --- Input source trimming ---
 # Command:
 #   trim <param>
-#     where <param> ie either "yes" or "no"
+#     where <param> is one of "-", "lines", "spaces", "all", "yes" or "no"
+#     ** the "yes" and "no" parameters are DEPRECATED
+#        use "lines" instead of "yes" and "-" instead of "no"
 # Default:
-#   trim yes
+#   trim lines
+#   ** the default is DEPRECATED: may change to "all" in next release
 
 
 # --- Multiple input file separation ---
@@ -125,27 +133,34 @@
 # --- Output file language ---
 # Commands:
 #   language <param>
-#     where <param> is a valid language code recognised by HTML
+#     where <param> is either a valid language code recognised by HTML or
+#     "neutral" (or "-") if the file is language neutral
 #   language-neutral
+#   ** Command DEPRECATED: use "language neutral" instead
+#     
 # Examples:
 #   language en
 #   language en-gb
+#   language neutral
 # Default:
-#   language-neutral
+#   language neutral
 
 
 # --- Output document title ---
 # Commands:
 #   title <param>
-#     where <param> is the required title text
+#     where <param> is either the required title text or "-" to use the default
+#     title
 #   title-default
+#   ** Command DEPRECATED: use title "-" instead
 # Example
 #   title Highlighted Pascal Source Code
+#   title -
 # Default:
-#   title-default
+#   title -
 
 
-# -- Output document encoding ---
+# --- Output document encoding ---
 # Command:
 #   encoding <param>
 #     where <param> is one of "utf-8", "utf-16", "windows-1252" or "iso-8859-1"
@@ -188,7 +203,28 @@
 #   legacy-css no
 
 
-# -- Line numbering
+# --- Code generation ---
+# Command:
+#   inhibit-styling <param>
+#     where <param> is either:
+#       a set of zero or more of the values, "space", "comment", "kwd", "ident",
+#       "sym", "str", "num", "float", "hex", "preproc", "asm" or "err",
+#       separated by commas, with no spaces, and enclosed in curly brackets,
+#     or:
+#       a single one of the above values,
+#     or:
+#       a minus sign, "-", as an alias for the empty set "{}".
+# Examples:
+#   inhibit-styling {space}
+#   inhibit-styling space
+#   inhibit-styling {num,float,hex}
+#   inhibit-styling {}
+#   inhibit-styling -
+# Default:
+#   inhibit-styling {}
+
+
+# --- Line numbering ---
 # Commands:
 #   line-numbering <param>
 #     where <param> is either "on" or "off"
@@ -196,13 +232,16 @@
 #     where <param> is a number in range 1..6
 #   line-number-padding <param>
 #     where <param> is one of "space", "zero", "dot" or "dash"
+#   line-number-start <param>
+#     where <param> is a number in range 1...9999
 # Defaults:
 #   line-numbering off
 #   line-number-width 3
 #   line-number-padding space
+#   line-number-start 1
 
 
-# -- Line styling
+# --- Line styling ---
 # Command:
 #   striping <param>
 #     where <param> is either "on" or "off"
@@ -210,24 +249,35 @@
 #   striping off
 
 
-# -- Meta tags
+# --- Meta tags ---
 # Commands:
 #   viewport <param>
 #     where <param> is one of "phone" or "none"
 #   edge-compatibility <param>
 #     where <param> is either "on" or "off"
-#   Defaults:
-#     viewport none
-#     ** the viewport default is DEPRECATED: may change in next major release
-#     edge-compatibility off
+# Defaults:
+#   viewport none
+#   ** the viewport default is DEPRECATED: may change in next major release
+#   edge-compatibility off
 
 
 # --- Output verbosity ---
 # Commands:
 #   verbosity <param>
-#     where <param> is either "quiet", "no-warn" or "normal"
-#   quiet
+#     where <param> is either:
+#       a set of zero or more of the values "info", "warn" (aka "warning" aka
+#       "warnings") or "error" (aka "errors"), separated by commas, with no
+#       spaces, and enclosed in curly brackets,
+#     or one of:
+#       "normal", "no-warn", "quiet", "silent" or a minus sign, "-"
+#     ** the "normal" and "no-warn" parameters are DEPRECATED
+#        use "{info,warn,error}" instead of "normal" and "{info,errors}" instead
+#        of "no-warn"
 # Default:
-#   verbosity normal
-#   ** the default is DEPRECATED: may change in next major release
-
+#   verbosity {info,warn,error}
+#   ** the default is DEPRECATED: may change in next major release.
+# Examples:
+#   verbosity {info}
+#   verbosity -
+#   verbosity {warnings,info}
+#   verbosity quiet

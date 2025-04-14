@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/
  *
- * Copyright (C) 2005-2022, Peter Johnson (www.delphidabbler.com).
+ * Copyright (C) 2005-2025, Peter Johnson (www.delphidabbler.com).
  *
  * Declares types required when using syntax highlighters. Defines interface
  * supported by highlighter objects and enumeration of different highlighter
@@ -19,7 +19,8 @@ interface
 
 uses
   // Delphi
-  Classes, Graphics;
+  System.Classes,
+  Vcl.Graphics;
 
 
 type
@@ -41,6 +42,9 @@ type
     heError         // an unrecognised piece of code (shouldn't happen)
   );
 
+  ///  <summary>Set of hiliter elements.</summary>
+  THiliteElements = set of THiliteElement;
+
   ///  <summary>Records options used to customise syntax highlighting.
   ///  </summary>
   THiliteOptions = record
@@ -50,14 +54,17 @@ type
     fPadding: Char;
     fStartNumber: Word;
     fAlternateLines: Boolean;
+    fExcludedElements: THiliteElements;
   public
     property UseLineNumbering: Boolean read fUseLineNumbering;
     property Width: Byte read fWidth;
     property Padding: Char read fPadding;
     property StartNumber: Word read fStartNumber;
     property AlternateLines: Boolean read fAlternateLines;
+    property ExcludedElements: THiliteElements read fExcludedElements;
     constructor Create(AUseLineNumbering: Boolean; AWidth: Byte;
-      APadding: Char; AAlternateLines: Boolean; AStartNumber: Word);
+      APadding: Char; AAlternateLines: Boolean; AStartNumber: Word;
+      AExcludedElements: THiliteElements);
   end;
 
   ///  <summary>Interface implemented by all highlighter classes.</summary>
@@ -83,7 +90,8 @@ implementation
 { THiliteOptions }
 
 constructor THiliteOptions.Create(AUseLineNumbering: Boolean;
-  AWidth: Byte; APadding: Char; AAlternateLines: Boolean; AStartNumber: Word);
+  AWidth: Byte; APadding: Char; AAlternateLines: Boolean; AStartNumber: Word;
+  AExcludedElements: THiliteElements);
 begin
   fUseLineNumbering := AUseLineNumbering;
   if fUseLineNumbering then
@@ -99,6 +107,7 @@ begin
     fStartNumber := 0;
   end;
   fAlternateLines := AAlternateLines;
+  fExcludedElements := AExcludedElements;
 end;
 
 end.
